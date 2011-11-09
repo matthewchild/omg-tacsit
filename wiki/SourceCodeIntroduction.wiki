@@ -1,0 +1,16 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+A brief introduction into the organization of the source code
+
+
+= Details =
+
+This implementation of the standard is written in Java. The project was created using NetBeans.
+
+The source code is broken into three separate projects:
+
+  # "spec" - The specification as defined by OMG.
+  # "reference" - An abstract reference implementation which provides common implementations of some specification interfaces.
+  # "worldwind" - A full implementation of the standard using Worldwind. This implementation leverages the reference implementation.
