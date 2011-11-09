@@ -1,11 +1,4 @@
-#summary One-sentence summary of this page.
-
-= Introduction =
-
-A brief introduction into the organization of the source code
-
-
-= Details =
+#summary A brief introduction into the organization of the source code
 
 This implementation of the standard is written in Java. The project was created using NetBeans.
 
