@@ -1,0 +1,348 @@
+/**
+ * Organization:  SimVentions, Inc.
+ * Creation Date: Jul 22, 2011
+ */
+package org.omg.tacsit.ui.viewport;
+
+import java.awt.event.ItemEvent;
+import java.util.Collection;
+import java.util.Collections;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.InternationalFormatter;
+import org.omg.tacsit.common.math.Angle;
+import org.omg.tacsit.controller.Projection;
+import org.omg.tacsit.controller.ViewEyeProperties;
+import org.omg.tacsit.geometry.GeodeticPosition;
+import org.omg.tacsit.common.text.DegreeMinuteSecondFormat;
+import org.omg.tacsit.common.util.CollectionUtils;
+import org.omg.tacsit.ui.geometry.PositionPanel;
+
+/**
+ * A panel that can display and edit ViewEyeProperties.
+ * @author Matthew Child
+ */
+public class ViewEyePropertiesPanel extends javax.swing.JPanel
+{
+
+  private boolean editable;
+  private ViewEyeProperties viewEye;
+  private DefaultComboBoxModel projectionModel;
+  private Collection<Projection> projectionOptions;
+  private boolean isInitializingFieldValues;
+
+  /**
+   * Creates a new instance.
+   */
+  public ViewEyePropertiesPanel()
+  {
+    isInitializingFieldValues = false;
+    editable = true;
+    projectionModel = new DefaultComboBoxModel();
+    projectionOptions = Collections.emptyList();
+    initComponents();
+  }
+
+  /**
+   * Gets the projections that are valid options for a ViewEyeProperties.
+   * @return The valid projection options.
+   */
+  public Collection<Projection> getProjectionOptions()
+  {
+    return projectionOptions;
+  }
+
+  /**
+   * Sets the projections that are valid options for a ViewEyeProperties.
+   * @param projectionOptions The valid projection options.
+   */
+  public void setProjectionOptions(Collection<Projection> projectionOptions)
+  {
+    Object currentSelection = this.projectionModel.getSelectedItem();
+
+    this.projectionOptions = CollectionUtils.copyToUnmodifiableCollection(projectionOptions);
+    this.projectionModel.removeAllElements();
+
+    for (Projection projection : this.projectionOptions)
+    {
+      projectionModel.addElement(projection);
+    }
+
+    this.projectionModel.setSelectedItem(currentSelection);
+  }
+
+  /**
+   * Gets the ViewEyeProperties being edited or viewed.
+   * @return The ViewEyeProperties that are edited.
+   */
+  public ViewEyeProperties getViewEye()
+  {
+    return viewEye;
+  }
+
+  /**
+   * Sets the ViewEyePeroperties being edited or viewed.
+   * @param viewEyeProperties The ViewEyeProeprties that are edited.
+   */
+  public void setViewEye(ViewEyeProperties viewEyeProperties)
+  {
+    isInitializingFieldValues = true;
+    this.viewEye = viewEyeProperties;
+
+    double orientation = 0;
+    double rangeScale = 0;
+    Projection projection = null;
+    GeodeticPosition geoCenter = null;
+    if (viewEyeProperties != null)
+    {
+      geoCenter = this.viewEye.getGeoCenter();
+      projection = viewEyeProperties.getProjection();
+      rangeScale = viewEyeProperties.getRangeScale();
+      orientation = viewEyeProperties.getOrientation();
+    }
+    projectionField.setSelectedItem(projection);
+    centerPointPanel.setValue(geoCenter);
+    rangeField.setValue(rangeScale);
+    orientationField.setValue(Angle.fromRadians(orientation));
+    isInitializingFieldValues = false;
+  }
+  
+  private boolean arePropertiesEditable()
+  {
+    return editable && (viewEye != null);
+  }
+  
+  private void checkEditState()
+  {
+    boolean propertiesEditable = arePropertiesEditable();
+
+    projectionField.setEnabled(propertiesEditable);
+    rangeField.setEditable(propertiesEditable);
+    orientationField.setEditable(propertiesEditable);
+    centerPointPanel.setEditable(propertiesEditable);
+  }
+
+  /**
+   * Sets whether or not ViewEyeProperties are editable.
+   * @param editable Whether or not the properties should be editable.
+   */
+  public void setEditable(boolean editable)
+  {
+    this.editable = editable;
+    checkEditState();
+  }
+
+  /**
+   * Gets whether or not the ViewEyeProperties are editable.
+   * @return true if it is editable, false otherwise.
+   */
+  public boolean isEditable()
+  {
+    return this.editable;
+  }
+
+  private void setViewEyeOrientation(Angle angle)
+  {
+    if (arePropertiesEditable())
+    {
+      this.viewEye.setOrientation(angle.getRadians());
+    }
+  }
+
+  private void setViewEyeProjection(Projection projection)
+  {
+    if (arePropertiesEditable())
+    {
+      this.viewEye.setProjection(projection);
+    }
+  }
+
+  private void setViewEyeRangeScale(double rangeScale)
+  {
+    if (arePropertiesEditable())
+    {
+      this.viewEye.setRangeScale(rangeScale);
+    }
+  }
+
+  private void setViewEyeCenterPoint(GeodeticPosition centerPoint)
+  {
+    if (arePropertiesEditable())
+    {
+      this.viewEye.setGeoCenter(centerPoint);
+    }
+  }
+  private static final String VALUE_PROPERTY = "value";
+
+  /** This method is called from within the constructor to
+   * initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is
+   * always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+  // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+  private void initComponents() {
+
+    projectionField = new javax.swing.JComboBox();
+    javax.swing.JLabel projectionLabel = new javax.swing.JLabel();
+    javax.swing.JLabel rangeLabel = new javax.swing.JLabel();
+    javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+    rangeField = new javax.swing.JFormattedTextField();
+    orientationField = new javax.swing.JFormattedTextField();
+    javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
+    javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+    centerPointPanel = new org.omg.tacsit.ui.geometry.PositionPanel();
+
+    projectionField.setModel(projectionModel);
+    projectionField.addItemListener(new java.awt.event.ItemListener() {
+      public void itemStateChanged(java.awt.event.ItemEvent evt) {
+        projectionSelectionChanged(evt);
+      }
+    });
+
+    projectionLabel.setText("Projection:");
+
+    rangeLabel.setText("Range:");
+
+    jLabel1.setText("Orientation:");
+
+    rangeField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0"))));
+    rangeField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+    rangeField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+      public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        rangePropertyChanged(evt);
+      }
+    });
+
+    orientationField.setFormatterFactory(new DefaultFormatterFactory(new InternationalFormatter(new DegreeMinuteSecondFormat())));
+    orientationField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+    orientationField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+      public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        orientationPropertyChanged(evt);
+      }
+    });
+
+    jLabel2.setText("Degrees");
+
+    jLabel3.setText("Meters");
+
+    centerPointPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Center Point"));
+    centerPointPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+      public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        centerPropertyChanged(evt);
+      }
+    });
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+    this.setLayout(layout);
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(projectionLabel)
+              .addComponent(rangeLabel))
+            .addGap(24, 24, 24)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(projectionField, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                  .addComponent(orientationField, javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(rangeField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jLabel3)
+                  .addComponent(jLabel2)))))
+          .addComponent(jLabel1)
+          .addComponent(centerPointPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    layout.setVerticalGroup(
+      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(projectionField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(projectionLabel))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(rangeField, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(rangeLabel)
+          .addComponent(jLabel3))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(orientationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel1)
+          .addComponent(jLabel2))
+        .addGap(18, 18, 18)
+        .addComponent(centerPointPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+  }// </editor-fold>//GEN-END:initComponents
+
+  private void rangePropertyChanged(java.beans.PropertyChangeEvent evt)//GEN-FIRST:event_rangePropertyChanged
+  {//GEN-HEADEREND:event_rangePropertyChanged
+    if (!isInitializingFieldValues)
+    {
+      String propertyName = evt.getPropertyName();
+      if (VALUE_PROPERTY.equals(propertyName))
+      {
+        Number range = (Number) rangeField.getValue();
+        if (range != null)
+        {
+          setViewEyeRangeScale(range.doubleValue());
+        }
+      }
+    }
+  }//GEN-LAST:event_rangePropertyChanged
+
+  private void orientationPropertyChanged(java.beans.PropertyChangeEvent evt)//GEN-FIRST:event_orientationPropertyChanged
+  {//GEN-HEADEREND:event_orientationPropertyChanged
+    if (!isInitializingFieldValues)
+    {
+      String propertyName = evt.getPropertyName();
+      if (VALUE_PROPERTY.equals(propertyName))
+      {
+        Angle orientation = (Angle) orientationField.getValue();
+        if (orientation != null)
+        {
+          setViewEyeOrientation(orientation);
+        }
+      }
+    }
+  }//GEN-LAST:event_orientationPropertyChanged
+
+  private void projectionSelectionChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_projectionSelectionChanged
+  {//GEN-HEADEREND:event_projectionSelectionChanged
+    if(!isInitializingFieldValues)
+      {
+        if(ItemEvent.SELECTED == evt.getStateChange())
+        {
+          Object item = evt.getItem();
+          Projection projection = ((Projection)item);
+          setViewEyeProjection(projection);
+        }
+      }
+  }//GEN-LAST:event_projectionSelectionChanged
+
+  private void centerPropertyChanged(java.beans.PropertyChangeEvent evt)//GEN-FIRST:event_centerPropertyChanged
+  {//GEN-HEADEREND:event_centerPropertyChanged
+    if (!isInitializingFieldValues)
+    {
+      String propertyName = evt.getPropertyName();
+      if (propertyName.equals(PositionPanel.VALUE_PROPERTY))
+      {
+        GeodeticPosition position = centerPointPanel.getValue();
+        setViewEyeCenterPoint(position);
+      }
+    }
+  }//GEN-LAST:event_centerPropertyChanged
+  // Variables declaration - do not modify//GEN-BEGIN:variables
+  private org.omg.tacsit.ui.geometry.PositionPanel centerPointPanel;
+  private javax.swing.JFormattedTextField orientationField;
+  private javax.swing.JComboBox projectionField;
+  private javax.swing.JFormattedTextField rangeField;
+  // End of variables declaration//GEN-END:variables
+}
